@@ -1,0 +1,44 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Urls parser test project</title>
+</head>
+<body>
+<textarea cols="100" rows="20" id="processing_successes"></textarea>
+
+<textarea cols="100" rows="20" id="results"></textarea>
+
+    <script type="text/javascript" src="{% static 'jquery-1.12.1.min.js' %}"></script>
+    <script type="text/javascript">
+        var results = $('#results');
+        var processing_successes = $('#processing_successes');
+
+        {% for url_parse_result in urls_parse_results %}
+            var urls_parse_result = '{{ url_parse_result.url }}';
+            var processing_success = '{{ url_parse_result.end_datetime_repr }}: ';
+            processing_success += '{{ url_parse_result.url }} ';
+            {% if url_parse_result.processing_success %}
+                processing_success += 'Success';
+
+                urls_parse_result += ' - ';
+                {% if url_parse_result.title %}
+                    urls_parse_result += 'Title: {{ url_parse_result.title }}';
+                {% endif %}
+                {% if url_parse_result.encoding %}
+                    urls_parse_result += ' Encoding: {{ url_parse_result.encoding }}';
+                {% endif %}
+                {% if url_parse_result.h1 %}
+                    urls_parse_result += ' H1: {{ url_parse_result.h1 }}';
+                {% endif %}
+
+            {% else %}
+                processing_success += 'Failure';
+            {% endif %}
+            results.append(urls_parse_result + '\n');
+            processing_successes.append(processing_success + '\n');
+        {% endfor %}
+    </script>
+</body>
+</html>
